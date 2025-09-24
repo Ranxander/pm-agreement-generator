@@ -34,33 +34,127 @@ GENERAL_SERVICES_RULES = [
     ("refrigerant", "Provide refrigerant conservation services, including certified leak detection, recovery, and recycling to comply with the Clean Air Act and all applicable state/local regulations."),
 ]
 
-COIL_EQUIP = {"Air Handler","RTUs","CRAC ID","CRAC OD","Fan Coil","Mini-Splits","Water-Cooled Chillers","Condenser","Cooling Towers"}
-REFRIG_EQUIP = {"Air Handler","RTUs","CRAC ID","CRAC OD","Fan Coil","Mini-Splits","Water-Cooled Chillers","Condenser"}
+COIL_EQUIP = {
+    "Air Handler","RTUs","CRAC ID","CRAC OD","Fan Coil","Mini-Splits",
+    "Water-Cooled Chillers","Condenser","Cooling Towers"
+}
+REFRIG_EQUIP = {
+    "RTUs","CRAC ID","CRAC OD","Fan Coil","Mini-Splits","Water-Cooled Chillers","Condenser"
+    # Note: Typical AHUs are hydronic/coil-air; exclude "Air Handler" from refrigerant set unless your shop wants it included.
+}
 BOILER_EQUIP = {"Boilers"}
 HYDRONIC_EQUIP = {"Pumps","Boilers","Water-Cooled Chillers","Cooling Towers","Fan Coil","Air Handler"}
 
+
 SCOPES = {
-    "Boilers": ("Boilers:",
+    "Boilers": (
+        "Boilers:",
         "• Annual: Inspect burner assembly; test flame detection, fuel cut-off, low-water cutoff, and safety valves; inspect fuel system; record operating pressures, gas settings, boiler input/output; calibrate controls; run combustion analysis.",
-        "• Quarterly: Test flame detection, operating control, flow switch, and fuel system; inspect pump operation; blow down low-water cutoff; verify flame condition."),
-    "Cooling Towers": ("Cooling Towers:",
+        "• Quarterly: Test flame detection, operating control, flow switch, and fuel system; inspect pump operation; blow down low-water cutoff; verify flame condition."
+    ),
+    "Cooling Towers": (
+        "Cooling Towers:",
         "• Annual: Remove debris, flush basin, inspect/clean strainers, lubricate bearings, change gear reducer oil (if equipped), inspect belts/pulleys, check electrical connections and controls, record motor amp draw, verify float valve operation, inspect spray nozzles, check fill media.",
-        "• Quarterly: Lubricate bearings, inspect belts/pulleys (if equipped), check controls, record amp draw, verify float valve, inspect/clean spray nozzles."),
-    "Pumps": ("Pumps:",
+        "• Quarterly: Lubricate bearings, inspect belts/pulleys (if equipped), check controls, record amp draw, verify float valve, inspect/clean spray nozzles."
+    ),
+    "Pumps": (
+        "Pumps:",
         "• Annual: Verify pump identification, inspect coupling, check for vibration/noise, record motor RLA and actual amps, inspect starter and connections, tighten electrical terminals, lubricate bearings (if applicable), check motor alignment, record voltage, return to service.",
-        "• Quarterly: Verify pump identification, inspect for vibration/noise, check coupling, record motor RLA and amps, return to service."),
-    "Air Handler": ("Air Handlers:",
+        "• Quarterly: Verify pump identification, inspect for vibration/noise, check coupling, record motor RLA and amps, return to service."
+    ),
+    "Air Handler": (
+        "Air Handlers:",
         "• Annual: Inspect and clean coils; replace or clean filters (if applicable); lubricate bearings; inspect blower assembly for wear; check fan wheel alignment; inspect and tighten electrical connections; verify damper operation; calibrate control sensors.",
-        "• Quarterly: Inspect filters and clean/replace as needed; check coil condition; inspect and adjust belt tension (if applicable); verify motor amperage and operating condition; inspect condensate pans and drains for proper operation."),
-    "RTUs": ("Roof Top Units (RTUs):",
+        "• Quarterly: Inspect filters and clean/replace as needed; check coil condition; inspect and adjust belt tension (if applicable); verify motor amperage and operating condition; inspect condensate pans and drains for proper operation."
+    ),
+    "RTUs": (
+        "Roof Top Units (RTUs):",
         "• Annual: Inspect and clean condenser and evaporator coils; replace or clean air filters (where applicable); inspect and lubricate fan and motor bearings (if applicable); inspect blower assembly for alignment and wear; inspect belts and pulleys for wear and proper tension (if equipped); inspect heat exchangers for cracks or corrosion; check refrigerant charge, pressures, and superheat/subcooling; inspect condensate pans and drains, clean and flush as needed; inspect electrical connections, contactors, relays, and capacitors; test safety controls and high/low pressure switches; verify economizer operation and damper function (if installed); record supply/return air temperatures, amperages, and voltages; calibrate thermostats and sensors as needed; perform combustion analysis on gas-fired sections (if applicable).",
-        "• Quarterly: Inspect and clean or replace filters as required; inspect coil condition and clean as needed; inspect belts/pulleys and adjust or replace as necessary; check fan and blower motor operation, record amperage draws; inspect and tighten electrical connections; inspect condensate drains for blockage and proper operation; record refrigerant pressures and system temperatures (if accessible); verify overall unit operation within manufacturer specifications; inspect cabinet condition, economizer (if applicable), and access panels."),
-    # (Other equipment types omitted for brevity; you’d paste the full list we finalized earlier here)
+        "• Quarterly: Inspect and clean or replace filters as required; inspect coil condition and clean as needed; inspect belts/pulleys and adjust or replace as necessary; check fan and blower motor operation, record amperage draws; inspect and tighten electrical connections; inspect condensate drains for blockage and proper operation; record refrigerant pressures and system temperatures (if accessible); verify overall unit operation within manufacturer specifications; inspect cabinet condition, economizer (if applicable), and access panels."
+    ),
+    "Fans": (
+        "Fans (Exhaust, Return, Supply, etc.):",
+        "• Annual: Inspect and clean fan housing and blades; lubricate bearings (if applicable); check belt alignment and tension (if applicable); inspect motor condition; tighten electrical connections; verify secure mounting.",
+        "• Quarterly: Inspect and clean blades as needed; check for vibration or noise; inspect bearings and lubricate as required; verify motor amperage and operating condition."
+    ),
+    "VFDs": (
+        "Variable Frequency Drives (VFDs):",
+        "• Annual: Inspect and clean enclosures; check electrical connections; record input and output voltages; test control signal operation; verify proper programming and setpoints; perform thermal scan when applicable.",
+        "• Quarterly: Inspect and clean filters/screens; check indicator lights, alarms, and error logs; record amperage and voltage readings; verify fan/motor integration and operating conditions."
+    ),
+    "Water-Cooled Chillers": (
+        "Water-Cooled Chillers:",
+        "• Annual: Inspect condenser and evaporator tubes; clean tubes as required; verify refrigerant charge and perform leak test; record operating pressures and temperatures; check oil level and quality; calibrate safety and operating controls; inspect starters, contactors, and safeties; verify flow switch operation; perform full operational test.",
+        "• Quarterly: Record operating pressures, temperatures, and amperages; inspect oil level and condition; verify chilled and condenser water flow rates; check electrical connections; test control panel and alarms; inspect refrigerant sight glasses."
+    ),
+    "CRAC ID": (
+        "CRAC Indoor (CRAC ID Units):",
+        "• Annual: Inspect evaporator coils; clean coils and drain pans; replace or clean air filters; check blower motor amperage and condition; inspect belts/pulleys (if applicable); verify humidifier operation (if equipped); inspect and tighten electrical connections; calibrate sensors and thermostats; test condensate pump operation; verify airflow and record supply/return air temperatures.",
+        "• Quarterly: Inspect and clean or replace filters; check coil condition; verify blower motor operation and amperage; inspect condensate drain/pump for proper operation; inspect electrical connections; record operating pressures and temperatures; verify alarm and control signal functionality."
+    ),
+    "CRAC OD": (
+        "CRAC Outdoor (CRAC OD Units):",
+        "• Annual: Inspect and clean condenser coils; inspect refrigerant charge, pressures, and superheat/subcooling; inspect condenser fan motors and blades; lubricate bearings (if applicable); check electrical connections, contactors, relays, and capacitors; test high/low pressure switches and safety controls; record operating voltages and amperages; inspect cabinet condition.",
+        "• Quarterly: Inspect and clean condenser coil surfaces; inspect fan motor operation and amperage; check electrical connections; verify refrigerant pressures and system temperatures (if accessible); inspect overall outdoor unit condition."
+    ),
+    "VAVs": (
+        "VAVs (Variable Air Volume Terminals):",
+        "• Annual: Inspect damper operation and actuator; verify thermostat calibration; inspect reheat coil (if present) and clean; check electrical connections; verify control sequence; record airflow and temperatures.",
+        "• Quarterly: Verify damper and actuator function; inspect filters (if applicable); inspect electrical connections; confirm temperature control operation."
+    ),
+    "Condenser": (
+        "Condensers (Standalone):",
+        "• Annual: Clean condenser coils; inspect fan motors and blades; lubricate bearings (if applicable); check electrical connections, contactors, relays, and capacitors; verify refrigerant charge and pressures; inspect cabinet/enclosure condition.",
+        "• Quarterly: Inspect and clean coil surfaces; verify fan operation; inspect electrical connections; record refrigerant pressures and system temperatures (if accessible)."
+    ),
+    "Mini-Splits": (
+        "Mini-Splits:",
+        "• Annual: Clean indoor unit coils and blower; replace or clean filters; inspect and clean outdoor coil; check fan motors (ID and OD); inspect electrical connections; check refrigerant charge; test condensate pump/drain; calibrate remote/thermostat; verify system operation and record supply/return air temperatures.",
+        "• Quarterly: Inspect and clean filters; check coil condition; verify fan operation; inspect condensate drain/pump; inspect electrical connections; confirm basic system operation."
+    ),
+    "Controls": (
+        "Controls (BAS/EMS Panels, Standalone Controllers):",
+        "• Annual: Inspect and clean control panels; verify wiring integrity; test inputs/outputs; review trend logs and alarms; update control sequences and schedules as required; calibrate sensors.",
+        "• Quarterly: Inspect control panels; check indicator lights, alarms, and event logs; test critical control signals; confirm time schedules and setpoints."
+    ),
+    "Furnace": (
+        "Furnaces:",
+        "• Annual: Inspect heat exchanger for cracks/corrosion; clean burners and combustion chamber; check flue venting and draft; test flame sensor, igniter, and safety controls; replace filters (if applicable); check blower motor operation and bearings; inspect electrical connections; perform combustion analysis.",
+        "• Quarterly: Inspect filters and replace/clean as required; check blower motor operation; verify thermostat operation; inspect ignition/flame sensor function; inspect flue vent for blockage."
+    ),
+    "Water Heater": (
+        "Water Heaters:",
+        "• Annual: Inspect burner assembly (gas) or heating elements (electric); check flue venting (if gas); flush tank to remove sediment; inspect anode rod; test safety relief valve; check electrical/gas connections; verify thermostatic control.",
+        "• Quarterly: Inspect for leaks; verify temperature and pressure; test safety relief valve; inspect electrical/gas connections."
+    ),
+    "Fan Coil": (
+        "Fan Coils:",
+        "• Annual: Clean coils and drain pans; replace or clean filters; inspect blower motor and fan wheel; lubricate bearings (if applicable); inspect electrical connections; verify control valve operation; test thermostat and sensors.",
+        "• Quarterly: Inspect and clean filters; check coil condition; inspect blower motor amperage and operation; inspect condensate drain for proper function; verify valve operation."
+    ),
 }
 
-ALIASES = {k.lower(): k for k in SCOPES.keys()}
-ALIASES.update({"ahu":"Air Handler","rtu":"RTUs","crac id":"CRAC ID","crac od":"CRAC OD"})
-
+ALIASES = {
+    **{k.lower(): k for k in SCOPES.keys()},
+    "ahu": "Air Handler",
+    "air handlers": "Air Handler",
+    "air handler": "Air Handler",
+    "rtu": "RTUs",
+    "roof top unit": "RTUs",
+    "roof top units": "RTUs",
+    "fan": "Fans",
+    "fans": "Fans",
+    "fan coil unit": "Fan Coil",
+    "fan coils": "Fan Coil",
+    "crac indoor": "CRAC ID",
+    "crac id": "CRAC ID",
+    "crac outdoor": "CRAC OD",
+    "crac od": "CRAC OD",
+    "chillers": "Water-Cooled Chillers",
+    "cooling tower": "Cooling Towers",
+    "condenser": "Condenser",
+    "vfd": "VFDs",
+}
 def canonical_scope_name(raw): return ALIASES.get((raw or "").strip().lower())
 
 def visits_text_from_frequency(freq):
