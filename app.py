@@ -34,18 +34,22 @@ GENERAL_SERVICES_RULES = [
     ("refrigerant", "Provide refrigerant conservation services, including certified leak detection, recovery, and recycling to comply with the Clean Air Act and all applicable state/local regulations."),
 ]
 
+# --- Equipment categories for filtering ---
 COIL_EQUIP = {
     "Air Handler","RTUs","CRAC ID","CRAC OD","Fan Coil","Mini-Splits",
-    "Water-Cooled Chillers","Condenser","Cooling Towers"
+    "Water-Cooled Chillers","Air-Cooled Chillers","Condenser","Cooling Towers","Free Cooling Modules"
 }
+
 REFRIG_EQUIP = {
-    "RTUs","CRAC ID","CRAC OD","Fan Coil","Mini-Splits","Water-Cooled Chillers","Condenser"
+    "RTUs","CRAC ID","CRAC OD","Fan Coil","Mini-Splits","Water-Cooled Chillers","Air-Cooled Chillers","Condenser"
     # Note: Typical AHUs are hydronic/coil-air; exclude "Air Handler" from refrigerant set unless your shop wants it included.
 }
-BOILER_EQUIP = {"Boilers"}
-HYDRONIC_EQUIP = {"Pumps","Boilers","Water-Cooled Chillers","Cooling Towers","Fan Coil","Air Handler"}
 
+HYDRONIC_EQUIP = {
+    "Pumps","Boilers","Water-Cooled Chillers","Air-Cooled Chillers","Cooling Towers","Fan Coil","Air Handler","Free Cooling Modules"
+}
 
+# --- Full Equipment scopes ---
 SCOPES = {
     "Boilers": (
         "Boilers:",
@@ -86,6 +90,11 @@ SCOPES = {
         "Water-Cooled Chillers:",
         "• Annual: Inspect condenser and evaporator tubes; clean tubes as required; verify refrigerant charge and perform leak test; record operating pressures and temperatures; check oil level and quality; calibrate safety and operating controls; inspect starters, contactors, and safeties; verify flow switch operation; perform full operational test.",
         "• Quarterly: Record operating pressures, temperatures, and amperages; inspect oil level and condition; verify chilled and condenser water flow rates; check electrical connections; test control panel and alarms; inspect refrigerant sight glasses."
+    ),
+    "Air-Cooled Chillers": (
+        "Air-Cooled Chillers:",
+        "• Annual: Inspect condenser coils and clean as required; verify refrigerant charge and perform leak test; record operating pressures and temperatures; check oil level and quality (if applicable); inspect compressor operation and condition; calibrate safety and operating controls; inspect starters, contactors, and safeties; test high/low pressure switches; verify fan motor operation and amperage; inspect condenser fans and blades; inspect electrical connections, relays, and capacitors; perform full operational test; record supply and return water temperatures.",
+        "• Quarterly: Record operating pressures, temperatures, and amperages; inspect condenser coil condition and clean if necessary; verify refrigerant sight glasses; check oil level and condition (if applicable); inspect electrical connections; verify condenser fan motor operation; confirm chilled water flow and return temperatures; inspect control panel and alarms."
     ),
     "CRAC ID": (
         "CRAC Indoor (CRAC ID Units):",
@@ -132,8 +141,14 @@ SCOPES = {
         "• Annual: Clean coils and drain pans; replace or clean filters; inspect blower motor and fan wheel; lubricate bearings (if applicable); inspect electrical connections; verify control valve operation; test thermostat and sensors.",
         "• Quarterly: Inspect and clean filters; check coil condition; inspect blower motor amperage and operation; inspect condensate drain for proper function; verify valve operation."
     ),
+    "Free Cooling Modules": (
+        "Free Cooling Modules:",
+        "• Annual: Inspect and clean heat exchanger coils and piping; verify free cooling changeover valves and actuators; test control logic for economizer operation; check strainers and flush as needed; inspect pumps or circulation devices associated with the module; verify electrical connections; inspect sensors and calibrate; record entering and leaving water temperatures.",
+        "• Quarterly: Verify free cooling valve operation and control signal response; inspect coil surfaces for cleanliness; check strainers and flush as required; inspect electrical connections; confirm economizer/free cooling mode engages under appropriate conditions; record operating temperatures and flow."
+    ),
 }
 
+# --- Aliases (normalize intake text to our keys) ---
 ALIASES = {
     **{k.lower(): k for k in SCOPES.keys()},
     "ahu": "Air Handler",
@@ -154,14 +169,24 @@ ALIASES = {
     "cooling tower": "Cooling Towers",
     "condenser": "Condenser",
     "vfd": "VFDs",
+    "air cooled chiller": "Air-Cooled Chillers",
+    "air-cooled chiller": "Air-Cooled Chillers",
+    "air cooled chillers": "Air-Cooled Chillers",
+    "free cooling module": "Free Cooling Modules",
+    "free cooling": "Free Cooling Modules",
+    "economizer module": "Free Cooling Modules",
 }
-def canonical_scope_name(raw): return ALIASES.get((raw or "").strip().lower())
+
+def canonical_scope_name(raw): 
+    return ALIASES.get((raw or "").strip().lower())
 
 def visits_text_from_frequency(freq):
     f = (freq or "").lower()
     if f.startswith("annual"): return "one (1) annual service per year"
     if f.startswith("semi"): return "one (1) operating inspection and one (1) annual service per year"
     if f.startswith("quarter"): return "three (3) operating inspections and one (1) annual service per year"
+    if f.startswith("bi"): return "six (6) operating inspections and one (1) annual service per year"
+    if f.startswith("month"): return "eleven (11) operating inspections and one (1) annual service per year"
     return "three (3) operating inspections and one (1) annual service per year"
 
 def billing_text_from_frequency(freq):
@@ -169,6 +194,8 @@ def billing_text_from_frequency(freq):
     if f.startswith("annual"): return "Billing will occur annually following completion of the scheduled maintenance visit."
     if f.startswith("semi"): return "Billing will occur semi-annually following completion of each scheduled maintenance visit."
     if f.startswith("quarter"): return "Billing will occur quarterly following completion of each scheduled maintenance visit."
+    if f.startswith("bi"): return "Billing will occur every other month following completion of each scheduled maintenance visit."
+    if f.startswith("month"): return "Billing will occur monthly following completion of each scheduled maintenance visit."
     return "Billing will occur quarterly following completion of each scheduled maintenance visit."
 
 def fraction_from_frequency(freq):
@@ -176,6 +203,8 @@ def fraction_from_frequency(freq):
     if f.startswith("annual"): return "the full annual agreement total"
     if f.startswith("semi"): return "one-half (1/2) of the annual agreement total"
     if f.startswith("quarter"): return "one-fourth (1/4) of the annual agreement total"
+    if f.startswith("bi"): return "one-sixth (1/6) of the annual agreement total"
+    if f.startswith("month"): return "one-twelfth (1/12) of the annual agreement total"
     return "one-fourth (1/4) of the annual agreement total"
 
 def parse_intake(file: bytes):
@@ -222,7 +251,7 @@ def generate_filename(property_name, start_date, end_date):
     VERSION_STORE.write_text(json.dumps(version_tracker))
     return f"{base} - {ver_str}.docx"
 
-def build_doc(payload, property_name):
+def build_doc(payload, property_name, alpha=True):
     freq = payload["agreement"].get("Service Frequency","")
     visits_text = visits_text_from_frequency(freq)
     billing_text = billing_text_from_frequency(freq)
@@ -257,7 +286,8 @@ def build_doc(payload, property_name):
 
     if present:
         doc.add_paragraph(); doc.add_paragraph("Equipment-Specific Services")
-        for name in sorted(present):
+        names = sorted(present) if alpha else list(present)
+        for name in names:
             hdr, ann, qtr = SCOPES[name]
             doc.add_paragraph(hdr); doc.add_paragraph(ann); doc.add_paragraph(qtr)
 
@@ -292,7 +322,8 @@ alpha = st.checkbox("Alphabetize equipment sections", value=True)
 
 if st.button("Generate Scope") and uploaded is not None:
     payload = parse_intake(uploaded.getvalue())
-    filename, bio = build_doc(payload, property_name=(prop_name or "Property"))
+    filename, bio = build_doc(payload, property_name=(prop_name or "Property"), alpha=alpha)
     st.success("Scope generated.")
     st.download_button("Download DOCX", data=bio, file_name=filename,
                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
