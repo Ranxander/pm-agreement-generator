@@ -49,6 +49,8 @@ HYDRONIC_EQUIP = {
     "Pumps","Boilers","Water-Cooled Chillers","Air-Cooled Chillers","Cooling Towers","Fan Coil","Air Handler","Free Cooling Modules"
 }
 
+BOILER_EQUIP = {"Boilers"}
+
 # --- Full Equipment scopes ---
 SCOPES = {
     "Boilers": (
